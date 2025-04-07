@@ -12,21 +12,28 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Install Stack
-        run: choco install haskell-stack
+      - name: Install Dependencies
+        run: |
+          choco install haskell-stack -y
+          refreshenv
+          stack upgrade
+        shell: powershell
+
+      - name: Set up Cabal
+        run: |
+          cabal update
+          cabal build --only-dependencies
+        shell: powershell
 
       - name: Build Pandoc
         run: |
-          stack upgrade
-          git submodule update --init --recursive
-          stack setup
-          stack build
+          cabal build all
+        shell: powershell
 
-      - name: Upload Pandoc Executable
-        uses: actions/upload-artifact@v3
+      - name: Upload Pandoc Binary
+        uses: actions/upload-artifact@v4
         with:
           name: pandoc-windows
-          path: |
-            .stack-work\install\*\bin\pandoc.exe
+          path: dist-newstyle\build\*\pandoc\*\build\pandoc\pandoc.exe

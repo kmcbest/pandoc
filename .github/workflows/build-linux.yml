@@ -1,7 +1,6 @@
 name: Build Pandoc (Linux)
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
@@ -20,14 +19,14 @@ jobs:
           sudo apt update
           sudo apt install -y ghc cabal-install make
 
-      - name: Set Up Haskell
+      - name: Set Up Haskell Environment
         run: |
           cabal update
-          cabal install --only-dependencies --enable-tests
+          cabal build --only-dependencies
 
       - name: Build Pandoc
         run: |
-          cabal build
+          cabal build all --enable-tests
 
       - name: Upload Pandoc Binary
         uses: actions/upload-artifact@v4

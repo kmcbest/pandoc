@@ -1,35 +1,27 @@
-name: Build Pandoc
+name: Build Pandoc Windows
 
 on:
   push:
     branches:
       - main
-  pull_request:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3.6.4
+        uses: actions/checkout@v3
 
-      - name: Install Dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y ghc cabal-install make
-
-      - name: Set Up Haskell
-        run: |
-          cabal update
-          cabal install --only-dependencies --enable-tests
+      - name: Install Stack
+        run: choco install haskell-stack
 
       - name: Build Pandoc
         run: |
-          cabal build
+          stack setup
+          stack build
 
       - name: Upload Pandoc Binary
-        uses: actions/upload-artifact@v3.6.4
+        uses: actions/upload-artifact@v3
         with:
           name: pandoc-windows
-          path: dist-newstyle/build/*/pandoc
-
+          path: dist\build\pandoc\pandoc.exe

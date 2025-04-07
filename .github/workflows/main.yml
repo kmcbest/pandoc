@@ -32,8 +32,14 @@ jobs:
           cabal build all
         shell: powershell
 
+      - name: Check Build Directory
+        run: |
+          Get-ChildItem -Path dist-newstyle -Recurse -Filter pandoc.exe -File
+        shell: powershell
+
       - name: Upload Pandoc Binary
         uses: actions/upload-artifact@v4
         with:
           name: pandoc-windows
-          path: dist-newstyle\build\*\pandoc\*\build\pandoc\pandoc.exe
+          path: dist-newstyle/build/*/pandoc/*/build/pandoc/pandoc.exe
+          if-no-files-found: error

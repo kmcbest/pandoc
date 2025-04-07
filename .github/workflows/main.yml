@@ -1,13 +1,15 @@
-name: Build Pandoc Windows
+name: Build Pandoc (Windows)
 
 on:
   push:
     branches:
       - main
+  pull_request:
 
 jobs:
   build:
     runs-on: windows-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -17,11 +19,14 @@ jobs:
 
       - name: Build Pandoc
         run: |
+          stack upgrade
+          git submodule update --init --recursive
           stack setup
           stack build
 
-      - name: Upload Pandoc Binary
+      - name: Upload Pandoc Executable
         uses: actions/upload-artifact@v3
         with:
           name: pandoc-windows
-          path: dist\build\pandoc\pandoc.exe
+          path: |
+            .stack-work\install\*\bin\pandoc.exe

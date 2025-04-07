@@ -41,5 +41,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pandoc-windows
-          path: dist-newstyle/build/*/pandoc/*/build/pandoc/pandoc.exe
+          path: dist-newstyle/
           if-no-files-found: error

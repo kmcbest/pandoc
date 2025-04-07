@@ -1,0 +1,36 @@
+name: Build Pandoc (Linux)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y ghc cabal-install make
+
+      - name: Set Up Haskell
+        run: |
+          cabal update
+          cabal install --only-dependencies --enable-tests
+
+      - name: Build Pandoc
+        run: |
+          cabal build
+
+      - name: Upload Pandoc Binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: pandoc-linux
+          path: dist-newstyle/build/*/pandoc
